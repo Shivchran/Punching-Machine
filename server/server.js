@@ -13,32 +13,27 @@ import adminRoutes from "./routes/adminRoutes.js";
 const app = express();
 
 // Allowed frontend origins
-const allowedOrigins = (process.env.CLIENT_URL || "")
-  .split(",")
-  .map((url) => url.trim())
-  .filter(Boolean);
+const allowedOrigins = [
+  "https://punching-machine.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:5174",
+];
 
-// Local development origins
-if (process.env.NODE_ENV !== "production") {
-  allowedOrigins.push(
-    "http://localhost:5173",
-    "http://localhost:5174"
-  );
-}
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
 
-// Middleware
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests without an Origin header (e.g. health checks)
-      if (!origin || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
+    return callback(new Error("Origin not allowed by CORS"));
+  },
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  optionsSuccessStatus: 204,
+};
 
-      return callback(null, false);
-    },
-  })
-);
+// Middleware - CORS must be before API routes
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
