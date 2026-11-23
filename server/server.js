@@ -15,6 +15,7 @@ const app = express();
 // Allowed frontend origins
 const allowedOrigins = [
   "https://punching-machine.vercel.app",
+  "https://punching-machine-git-main-shivchran.vercel.app",
   "http://localhost:5173",
   "http://localhost:5174",
 ];
